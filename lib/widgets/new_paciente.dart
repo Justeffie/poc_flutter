@@ -3,17 +3,17 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_poc/widgets/form_imput.dart';
 
 class NewPaciente extends StatefulWidget {
+  static final formKey = new GlobalKey<FormState>();
+
   @override
   _NewPacienteState createState() => _NewPacienteState();
 }
 
 class _NewPacienteState extends State<NewPaciente> {
-  final formKey = new GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: NewPaciente.formKey,
       child: Column(
         children: [
           FormInput(
@@ -38,7 +38,7 @@ class _NewPacienteState extends State<NewPaciente> {
           ),
           FlatButton(
             onPressed: () {
-              if (formKey.currentState.validate()) {}
+              if (NewPaciente.formKey.currentState.validate()) {}
             },
             child: Text(
               'Guardar',
