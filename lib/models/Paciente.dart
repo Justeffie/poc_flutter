@@ -2,7 +2,7 @@ class Paciente {
   int _id;
   String _name;
   String _apellido;
-  BigInt _dni;
+  int _dni;
   DateTime _fechaNacimiento;
   String _domicilio;
   double _peso;
@@ -12,7 +12,6 @@ class Paciente {
 
   Paciente(this._name, this._apellido, this._dni, this._fechaNacimiento,
       this._domicilio);
-
 
   Paciente.conNombreYApellido(this._name, this._apellido);
 
@@ -45,11 +44,9 @@ class Paciente {
 
   DateTime get fechaNacimiento => _fechaNacimiento;
 
-  BigInt get dni => _dni;
+  int get dni => _dni;
 
   String get apellido => _apellido;
 
   String get name => _name;
-
-
 }
