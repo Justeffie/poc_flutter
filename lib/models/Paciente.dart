@@ -10,8 +10,17 @@ class Paciente {
   List _enfermedadesPreexistentes;
   List _enfermedadesAntecedentesFamiliares;
 
-  Paciente(this._name, this._apellido, this._dni, this._fechaNacimiento,
+  Paciente(this._id, this._name, this._apellido, this._dni,
       this._domicilio);
+
+  Paciente.fromDB(this._id, this._name, this._apellido, this._dni, this._domicilio,
+      this._peso, this._altura);
+
+  Paciente.test(this._name, this._apellido, this._dni, this._domicilio,
+      this._peso, this._altura, [this._id]);
+
+  Paciente.paraGuardar(this._name, this._apellido, this._dni, this._domicilio,
+      this._peso, this._altura);
 
   Paciente.conNombreYApellido(this._name, this._apellido);
 
@@ -49,4 +58,25 @@ class Paciente {
   String get apellido => _apellido;
 
   String get name => _name;
+
+  int get id => _id;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': _id,
+      'name': _name,
+      'apellido': _apellido,
+      'dni': _dni,
+      'domicilio': _domicilio,
+      'peso': _peso,
+      'altura': _altura
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Paciente{_id: $_id, _name: $_name, _apellido: $_apellido, _dni: $_dni, _domicilio: $_domicilio, _peso: $_peso, _altura: $_altura}';
+  }
+
+
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_poc/widgets/form_imput.dart';
+import 'package:flutter_poc/dao/PacienteDao.dart';
+import 'package:flutter_poc/models/Paciente.dart';
+import 'package:flutter_poc/main.dart';
 
 class NewPaciente extends StatefulWidget {
   static final formKey = new GlobalKey<FormState>();
@@ -41,6 +44,12 @@ class _NewPacienteState extends State<NewPaciente> {
           "/" +
           picked.year.toString();
     }
+  }
+
+  Paciente buildPaciente() {
+    return Paciente.paraGuardar(_nombreController.text, _apellidoController.text,
+        int.tryParse(_dniController.text), _domicilioController.text,
+        double.tryParse(_pesoController.text), double.tryParse(_alturaController.text));
   }
 
   @override
@@ -151,7 +160,10 @@ class _NewPacienteState extends State<NewPaciente> {
                 margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
                 child: FlatButton(
                   onPressed: () {
-                    if (NewPaciente.formKey.currentState.validate()) {}
+                    if (NewPaciente.formKey.currentState.validate()) {
+                      PacienteDao().insertPaciente(buildPaciente());
+                      Navigator.pop(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+                    }
                   },
                   child: Text(
                     'Guardar',

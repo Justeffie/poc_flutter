@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_poc/dao/PacienteDao.dart';
+
 import './models/Paciente.dart';
 import './widgets/new_paciente.dart';
 import './widgets/paciente_list.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  /*PacienteDao pacientedao = PacienteDao();
+  pacientedao.deleteAll();*/
   runApp(MyApp());
 }
 
@@ -37,13 +43,30 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+void _startAddNewPaciente(BuildContext ctx) {
+  showModalBottomSheet(
+    context: ctx,
+    builder: (_) {
+      return GestureDetector(
+        onTap: () {},
+        child: NewPaciente(),
+        behavior: HitTestBehavior.opaque,
+      );
+    },
+  );
+}
+
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Paciente> _pacientes = [
-    Paciente("Florencia", "Aquino", 37052585, DateTime.now(),
-        "Calle 123, 4567, Ranelagh, Berazategui"),
-  ];
+  List<Paciente> _pacientes = [];
+
   @override
   Widget build(BuildContext context) {
+    PacienteDao().pacientes().then((value) => {
+          setState(() {
+            _pacientes = value;
+          })
+        });
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
