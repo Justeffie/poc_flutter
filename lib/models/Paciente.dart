@@ -3,24 +3,24 @@ class Paciente {
   String _name;
   String _apellido;
   int _dni;
-  DateTime _fechaNacimiento;
+  int _fechaNacimiento;
   String _domicilio;
   double _peso;
   double _altura;
   List _enfermedadesPreexistentes;
   List _enfermedadesAntecedentesFamiliares;
 
-  Paciente(this._id, this._name, this._apellido, this._dni,
-      this._domicilio);
+  Paciente(this._id, this._name, this._apellido, this._dni, this._domicilio);
 
-  Paciente.fromDB(this._id, this._name, this._apellido, this._dni, this._domicilio,
-      this._peso, this._altura);
+  Paciente.fromDB(this._id, this._name, this._apellido, this._dni,
+      this._domicilio, this._peso, this._altura, this._fechaNacimiento);
 
   Paciente.test(this._name, this._apellido, this._dni, this._domicilio,
-      this._peso, this._altura, [this._id]);
+      this._peso, this._altura,
+      [this._id]);
 
   Paciente.paraGuardar(this._name, this._apellido, this._dni, this._domicilio,
-      this._peso, this._altura);
+      this._peso, this._altura, this._fechaNacimiento);
 
   Paciente.conNombreYApellido(this._name, this._apellido);
 
@@ -51,7 +51,7 @@ class Paciente {
 
   String get domicilio => _domicilio;
 
-  DateTime get fechaNacimiento => _fechaNacimiento;
+  int get fechaNacimiento => _fechaNacimiento;
 
   int get dni => _dni;
 
@@ -69,14 +69,20 @@ class Paciente {
       'dni': _dni,
       'domicilio': _domicilio,
       'peso': _peso,
-      'altura': _altura
+      'altura': _altura,
+      'fechaNacimiento': _fechaNacimiento
     };
   }
 
   @override
   String toString() {
-    return 'Paciente{_id: $_id, _name: $_name, _apellido: $_apellido, _dni: $_dni, _domicilio: $_domicilio, _peso: $_peso, _altura: $_altura}';
+    return 'Paciente{_id: $_id,'
+        ' _name: $_name,'
+        ' _apellido: $_apellido,'
+        ' _dni: $_dni,'
+        ' _domicilio: $_domicilio, '
+        '_peso: $_peso,'
+        ' _altura: $_altura,'
+        ' fechaNacimiento: $_fechaNacimiento}';
   }
-
-
 }

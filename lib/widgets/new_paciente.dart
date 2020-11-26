@@ -4,6 +4,7 @@ import 'package:flutter_poc/widgets/form_imput.dart';
 import 'package:flutter_poc/dao/PacienteDao.dart';
 import 'package:flutter_poc/models/Paciente.dart';
 import 'package:flutter_poc/main.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
 
 class NewPaciente extends StatefulWidget {
   static final formKey = new GlobalKey<FormState>();
@@ -20,8 +21,62 @@ class _NewPacienteState extends State<NewPaciente> {
   final _pesoController = TextEditingController();
   final _alturaController = TextEditingController();
   final _domicilioController = TextEditingController();
+  List _enfermedadesPreexistentes;
+  List _antecedentesFamiliares;
+
+  List get _enfermedades {
+    return [
+      {
+        "code": "Diabetes",
+        "value": "Diabetes",
+      },
+      {
+        "code": "Cancer",
+        "value": "Cancer",
+      },
+      {
+        "code": "Asma",
+        "value": "Asma",
+      },
+      {
+        "code": "Obesidad",
+        "value": "Obesidad",
+      },
+      {
+        "code": "Parkinson",
+        "value": "Parkinson",
+      },
+      {
+        "code": "Artrosis",
+        "value": "Artrosis",
+      },
+      {
+        "code": "EPOC",
+        "value": "EPOC",
+      },
+      {
+        "code": "Epilepsia",
+        "value": "Epilepsia",
+      },
+      {
+        "code": "Glucoma",
+        "value": "Glucoma",
+      },
+      {
+        "code": "Lupus",
+        "value": "Lupus",
+      },
+    ];
+  }
 
   DateTime selectedDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    _enfermedadesPreexistentes = [];
+    _antecedentesFamiliares = [];
+  }
 
   String validation(String value) {
     if (value.isEmpty) {
@@ -47,9 +102,14 @@ class _NewPacienteState extends State<NewPaciente> {
   }
 
   Paciente buildPaciente() {
-    return Paciente.paraGuardar(_nombreController.text, _apellidoController.text,
-        int.tryParse(_dniController.text), _domicilioController.text,
-        double.tryParse(_pesoController.text), double.tryParse(_alturaController.text));
+    return Paciente.paraGuardar(
+        _nombreController.text,
+        _apellidoController.text,
+        int.tryParse(_dniController.text),
+        _domicilioController.text,
+        double.tryParse(_pesoController.text),
+        double.tryParse(_alturaController.text),
+        selectedDate.toLocal().millisecondsSinceEpoch);
   }
 
   @override
@@ -87,7 +147,7 @@ class _NewPacienteState extends State<NewPaciente> {
               ),
               FormInput(
                 labelText: "Domicilio",
-                hintText: "Calle, N\u00FAmero, Ciudad, Provincia",
+                hintText: "Calle, N\u00FAmero, Localidad, Provincia",
                 validator: (String value) => validation(value),
                 isNumber: false,
                 isText: false,
@@ -158,11 +218,84 @@ class _NewPacienteState extends State<NewPaciente> {
               ),
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
+                padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+                child: MultiSelectFormField(
+                  autovalidate: false,
+                  chipBackGroundColor: Colors.blue,
+                  chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  dialogTextStyle: TextStyle(fontWeight: FontWeight.normal),
+                  checkBoxActiveColor: Colors.blue,
+                  checkBoxCheckColor: Colors.white,
+                  dialogShapeBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  ),
+                  title: Text(
+                    "Enfermedades Preexistentes",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  dataSource: _enfermedades,
+                  textField: 'code',
+                  valueField: 'value',
+                  okButtonLabel: 'OK',
+                  cancelButtonLabel: 'CANCELAR',
+                  hintWidget: Text('Seleccione uno o m\u00E1s'),
+                  initialValue: _enfermedadesPreexistentes,
+                  onSaved: (value) {
+                    if (value == null) return;
+                    setState(() {
+                      _enfermedadesPreexistentes = value;
+                    });
+                  },
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(bottom: 20.0),
+                padding: EdgeInsets.all(10.0),
+                child: MultiSelectFormField(
+                  autovalidate: false,
+                  chipBackGroundColor: Colors.blue,
+                  chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+                  dialogTextStyle: TextStyle(fontWeight: FontWeight.normal),
+                  checkBoxActiveColor: Colors.blue,
+                  checkBoxCheckColor: Colors.white,
+                  dialogShapeBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  ),
+                  title: Text(
+                    "Antecedentes Familiares",
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  dataSource: _enfermedades,
+                  textField: 'code',
+                  valueField: 'value',
+                  okButtonLabel: 'OK',
+                  cancelButtonLabel: 'CANCELAR',
+                  hintWidget: Text('Seleccione uno o m\u00E1s'),
+                  initialValue: _antecedentesFamiliares,
+                  onSaved: (value) {
+                    if (value == null) return;
+                    setState(() {
+                      _antecedentesFamiliares = value;
+                    });
+                  },
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
                 child: FlatButton(
+                  padding: EdgeInsets.only(
+                    left: 48.0,
+                    right: 48.0,
+                    top: 10.0,
+                    bottom: 10.0,
+                  ),
                   onPressed: () {
                     if (NewPaciente.formKey.currentState.validate()) {
                       PacienteDao().insertPaciente(buildPaciente());
-                      Navigator.pop(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+                      Navigator.pop(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyHomePage()));
                     }
                   },
                   child: Text(

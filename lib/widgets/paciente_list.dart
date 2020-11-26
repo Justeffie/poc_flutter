@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:age/age.dart';
 import '../models/Paciente.dart';
 
 class PacienteList extends StatelessWidget {
   final List<Paciente> pacientes;
 
   PacienteList({this.pacientes});
+
+  String getEdad(int date) {
+    print(pacientes[0]);
+    DateTime dateDT = new DateTime.fromMicrosecondsSinceEpoch(date);
+    return Age.dateDifference(
+            fromDate: dateDT, toDate: DateTime.now(), includeToDate: false)
+        .years
+        .toString();
+  }
+
+  String dniFormatter(int dni) {
+    String formattedDni = dni.toString();
+    String bg = formattedDni.substring(0, 2);
+    String md = formattedDni.substring(2, 5);
+    String end = formattedDni.substring(5, 8);
+    return bg + "." + md + "." + end;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +88,7 @@ class PacienteList extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      pacientes[index].dni.toString(),
+                                      dniFormatter(pacientes[index].dni),
                                     ),
                                   ],
                                 ),
@@ -91,8 +109,7 @@ class PacienteList extends StatelessWidget {
                                       ),
                                     ),
                                     Text(
-                                      '55kg'
-                                      /*pacientes[index].peso.toString()*/,
+                                      pacientes[index].peso.toString() + 'kg',
                                       style: TextStyle(
                                         fontSize: 15,
                                       ),
@@ -118,8 +135,7 @@ class PacienteList extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '15'
-                                  /*pacientes[index].peso.toString()*/,
+                                  getEdad(pacientes[index].fechaNacimiento),
                                   style: TextStyle(
                                     fontSize: 15,
                                   ),

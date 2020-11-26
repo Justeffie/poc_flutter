@@ -5,14 +5,12 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class PacienteDao {
-
-
   final Future<Database> database = getDatabasesPath().then((String path) {
     return openDatabase(
       join(path, 'paciente_database.db'),
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE pacientes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, apellido TEXT, dni INTEGER, domicilio TEXT, peso REAL, altura REAL)",
+          "CREATE TABLE pacientes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, apellido TEXT, dni INTEGER, domicilio TEXT, peso REAL, altura REAL, fechaNacimiento INTEGER)",
         );
       },
       // Set the version. This executes the onCreate function and provides a
@@ -44,9 +42,16 @@ class PacienteDao {
 
     // Convert the List<Map<String, dynamic> into a List<Paciente>.
     return List.generate(maps.length, (i) {
-      return Paciente.fromDB(maps[i]['id'], maps[i]['name'], maps[i]['apellido'],
-          maps[i]['dni'], maps[i]['domicilio'], maps[i]['peso'],
-          maps[i]['altura']);
+      return Paciente.fromDB(
+        maps[i]['id'],
+        maps[i]['name'],
+        maps[i]['apellido'],
+        maps[i]['dni'],
+        maps[i]['domicilio'],
+        maps[i]['peso'],
+        maps[i]['altura'],
+        maps[i]['fechaNacimiento'],
+      );
     });
   }
 
@@ -84,8 +89,6 @@ class PacienteDao {
     final db = await database;
 
     // Remove the Paciente from the database.
-    await db.delete(
-      'pacientes'
-    );
+    await db.delete('pacientes');
   }
 }
