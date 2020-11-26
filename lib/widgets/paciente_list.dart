@@ -8,7 +8,7 @@ class PacienteList extends StatelessWidget {
   PacienteList({this.pacientes});
 
   String getEdad(int date) {
-    DateTime dateDT = new DateTime.fromMicrosecondsSinceEpoch(date);
+    DateTime dateDT = new DateTime.fromMillisecondsSinceEpoch(date);
     return Age.dateDifference(
             fromDate: dateDT, toDate: DateTime.now(), includeToDate: false)
         .years
