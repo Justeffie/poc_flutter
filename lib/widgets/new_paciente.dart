@@ -93,6 +93,10 @@ class _NewPacienteState extends State<NewPaciente> {
         lastDate: DateTime.now());
     if (picked != null && picked != selectedDate) {
       selectedDate = picked;
+      print(picked.toLocal());
+      print(picked.toLocal().millisecondsSinceEpoch);
+      print(new DateTime.fromMicrosecondsSinceEpoch(
+          picked.toLocal().millisecondsSinceEpoch));
       _fechaNacController.text = picked.day.toString() +
           "/" +
           picked.month.toString() +
