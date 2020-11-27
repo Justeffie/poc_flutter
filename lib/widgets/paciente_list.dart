@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:age/age.dart';
+import 'package:flutter/painting.dart';
 import '../models/Paciente.dart';
 
 class PacienteList extends StatelessWidget {
@@ -25,131 +26,151 @@ class PacienteList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 400,
-      child: pacientes.isEmpty
-          ? Center(
-              child: Text(
-                'No hay pacientes agregados',
-                style: ThemeData.light().textTheme.headline6,
-                textAlign: TextAlign.center,
-              ),
-            )
-          : ListView.builder(
-              itemBuilder: (context, index) {
-                return Card(
-                  child: Row(
-                    children: [
-                      Column(
+    return Expanded(
+      child: Container(
+        child: pacientes.isEmpty
+            ? Center(
+                child: Text(
+                  'No hay pacientes agregados',
+                  style: ThemeData.light().textTheme.headline6,
+                  textAlign: TextAlign.center,
+                ),
+              )
+            : ListView.builder(
+                itemBuilder: (context, index) {
+                  return Card(
+                    child: InkWell(
+                      onTap: () => {},
+                      child: Row(
                         children: [
-                          Container(
-                              padding: EdgeInsets.all(20),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    pacientes[index].name,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    pacientes[index].apellido,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              )),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                          Column(
                             children: [
                               Container(
-                                padding: EdgeInsets.only(
-                                  top: 20,
-                                  left: 20,
-                                  right: 20,
-                                  bottom: 10,
-                                ),
-                                child: Row(
+                                width: 115.0,
+                                child: Column(
                                   children: [
                                     Text(
-                                      'DNI: ',
+                                      pacientes[index].name,
                                       style: TextStyle(
-                                        color: Colors.grey,
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
-                                      dniFormatter(pacientes[index].dni),
+                                      pacientes[index].apellido,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Container(
-                                padding: EdgeInsets.only(
-                                  top: 20,
-                                  right: 20,
-                                  bottom: 10,
-                                ),
-                                child: Row(
+                            ],
+                          ),
+                          Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   children: [
-                                    Text(
-                                      'Peso: ',
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.grey,
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                        top: 20,
+                                        left: 20,
+                                        right: 20,
+                                        bottom: 10,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'DNI: ',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Text(
+                                            dniFormatter(pacientes[index].dni),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      pacientes[index].peso.toString() + 'kg',
-                                      style: TextStyle(
-                                        fontSize: 15,
+                                    Container(
+                                      padding: EdgeInsets.only(
+                                        top: 20,
+                                        right: 20,
+                                        bottom: 10,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'Peso: ',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Text(
+                                            pacientes[index].peso.toString() +
+                                                'kg',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     )
                                   ],
                                 ),
-                              )
-                            ],
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(
-                              bottom: 20,
-                              left: 20,
-                              right: 20,
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Edad: ',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.grey,
+                                Container(
+                                  padding: EdgeInsets.only(
+                                    bottom: 20,
+                                    left: 20,
+                                    right: 20,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'Edad: ',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      Text(
+                                        getEdad(
+                                            pacientes[index].fechaNacimiento),
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Text(
-                                  getEdad(pacientes[index].fechaNacimiento),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                  ),
-                                )
                               ],
                             ),
-                          )
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(left: 10.0),
+                            alignment: Alignment.center,
+                            child: Center(
+                              child: Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.grey,
+                                size: 20.0,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                );
-              },
-              itemCount: pacientes.length,
-            ),
+                    ),
+                  );
+                },
+                itemCount: pacientes.length,
+              ),
+      ),
     );
   }
 }
