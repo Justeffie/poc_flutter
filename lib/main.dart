@@ -82,7 +82,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => NewPaciente()));
+            context,
+            MaterialPageRoute(
+              builder: (context) => NewPaciente(),
+            ),
+          );
         },
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

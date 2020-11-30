@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:age/age.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_poc/widgets/pacienteDetails/paciente_details.dart';
+import '../utils/paciente_utils.dart';
 import '../models/Paciente.dart';
 
 class PacienteList extends StatelessWidget {
@@ -40,35 +42,45 @@ class PacienteList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Card(
                     child: InkWell(
-                      onTap: () => {},
+                      onTap: () => {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PacienteDetails(pacientes[index]),
+                          ),
+                        )
+                      },
                       child: Row(
                         children: [
-                          Column(
-                            children: [
-                              Container(
-                                width: 115.0,
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      pacientes[index].name,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      pacientes[index].apellido,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
+                          Container(
+                            width: 114.0,
+                            padding: EdgeInsets.all(16.0),
+                            margin: EdgeInsets.only(left: 2.0),
+                            decoration: BoxDecoration(
+                              color: Colors.greenAccent,
+                              borderRadius: BorderRadius.circular(100.0),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  pacientes[index].name,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  pacientes[index].apellido,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           Container(
                             child: Column(
@@ -92,7 +104,8 @@ class PacienteList extends StatelessWidget {
                                             ),
                                           ),
                                           Text(
-                                            dniFormatter(pacientes[index].dni),
+                                            PacienteUtils().getDniFormatted(
+                                                pacientes[index].dni),
                                           ),
                                         ],
                                       ),
@@ -140,7 +153,7 @@ class PacienteList extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        getEdad(
+                                        PacienteUtils().getEdad(
                                             pacientes[index].fechaNacimiento),
                                         style: TextStyle(
                                           fontSize: 15,

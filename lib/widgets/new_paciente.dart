@@ -59,10 +59,6 @@ class _NewPacienteState extends State<NewPaciente> {
         "value": "Epilepsia",
       },
       {
-        "code": "Glucoma",
-        "value": "Glucoma",
-      },
-      {
         "code": "Lupus",
         "value": "Lupus",
       },
@@ -123,6 +119,9 @@ class _NewPacienteState extends State<NewPaciente> {
           key: NewPaciente.formKey,
           child: Column(
             children: [
+              SizedBox(
+                height: 20,
+              ),
               Row(
                 children: [
                   Expanded(
@@ -304,11 +303,11 @@ class _NewPacienteState extends State<NewPaciente> {
                       fontSize: 18.0,
                     ),
                   ),
-                  color: Colors.green,
+                  color: Colors.amber,
                   textColor: Colors.white,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.green)),
+                      side: BorderSide(color: Colors.amber)),
                 ),
               ),
             ],
