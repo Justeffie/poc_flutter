@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_poc/widgets/form_imput.dart';
-import 'package:flutter_poc/dao/PacienteDao.dart';
-import 'package:flutter_poc/models/Paciente.dart';
-import 'package:flutter_poc/main.dart';
-import 'package:multiselect_formfield/multiselect_formfield.dart';
+import '../dao/PacienteDao.dart';
+import '../main.dart';
+import '../components/gradient_button.dart';
+import '../components/datepicker.dart';
+import '../components/multiselect.dart';
+import '../components/form_imput.dart';
+import '../models/Paciente.dart';
 
-class NewPaciente extends StatefulWidget {
+class NewPaciente extends StatelessWidget {
   static final formKey = new GlobalKey<FormState>();
-
-  @override
-  _NewPacienteState createState() => _NewPacienteState();
-}
-
-class _NewPacienteState extends State<NewPaciente> {
   final _fechaNacController = TextEditingController();
   final _nombreController = TextEditingController();
   final _apellidoController = TextEditingController();
@@ -65,20 +60,18 @@ class _NewPacienteState extends State<NewPaciente> {
     ];
   }
 
-  DateTime selectedDate = DateTime.now();
-
-  @override
-  void initState() {
-    super.initState();
-    _enfermedadesPreexistentes = [];
-    _antecedentesFamiliares = [];
-  }
-
-  String validation(String value) {
+  String validation(String value, int campoLength, double number) {
     if (value.isEmpty) {
       return "Campo requerido";
     }
+
+    if ((campoLength != null && (value.length >= campoLength)) ||
+        (number != null && double.parse(value) > number)) {
+      return "No es un valor v\u00E1lido ";
+    }
   }
+
+  DateTime selectedDate = DateTime.now();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -99,13 +92,34 @@ class _NewPacienteState extends State<NewPaciente> {
 
   Paciente buildPaciente() {
     return Paciente.paraGuardar(
-        _nombreController.text,
-        _apellidoController.text,
-        int.tryParse(_dniController.text),
-        _domicilioController.text,
-        double.tryParse(_pesoController.text),
-        double.tryParse(_alturaController.text),
-        selectedDate.toLocal().millisecondsSinceEpoch);
+      _nombreController.text,
+      _apellidoController.text,
+      int.tryParse(_dniController.text),
+      _domicilioController.text,
+      double.tryParse(_pesoController.text),
+      double.tryParse(_alturaController.text),
+      selectedDate.toLocal().millisecondsSinceEpoch,
+      _antecedentesFamiliares != null ? _antecedentesFamiliares.join(', ') : "",
+      _enfermedadesPreexistentes != null
+          ? _enfermedadesPreexistentes.join(', ')
+          : "",
+    );
+  }
+
+  _save(BuildContext context) {
+    if (NewPaciente.formKey.currentState.validate()) {
+      PacienteDao().insertPaciente(buildPaciente());
+      Navigator.pop(
+          context, MaterialPageRoute(builder: (context) => MyHomePage()));
+    }
+  }
+
+  _setEnfermedadesPreexistentes(List enfermedades) {
+    _enfermedadesPreexistentes = enfermedades;
+  }
+
+  _setAntecedentesFamiliares(List enfermedades) {
+    _antecedentesFamiliares = enfermedades;
   }
 
   @override
@@ -127,7 +141,8 @@ class _NewPacienteState extends State<NewPaciente> {
                   Expanded(
                     child: FormInput(
                       labelText: "Nombre",
-                      validator: (String value) => validation(value),
+                      validator: (String value) =>
+                          validation(value, null, null),
                       isNumber: false,
                       isText: true,
                       controller: _nombreController,
@@ -136,7 +151,8 @@ class _NewPacienteState extends State<NewPaciente> {
                   Expanded(
                     child: FormInput(
                       labelText: "Apellido",
-                      validator: (String value) => validation(value),
+                      validator: (String value) =>
+                          validation(value, null, null),
                       isNumber: false,
                       isText: true,
                       controller: _apellidoController,
@@ -147,7 +163,7 @@ class _NewPacienteState extends State<NewPaciente> {
               FormInput(
                 labelText: "Domicilio",
                 hintText: "Calle, N\u00FAmero, Localidad, Provincia",
-                validator: (String value) => validation(value),
+                validator: (String value) => validation(value, null, null),
                 isNumber: false,
                 isText: false,
                 controller: _domicilioController,
@@ -157,40 +173,14 @@ class _NewPacienteState extends State<NewPaciente> {
                   Expanded(
                     child: FormInput(
                       labelText: "DNI",
-                      validator: (String value) => validation(value),
+                      validator: (String value) => validation(value, 9, null),
                       isNumber: true,
                       isText: false,
                       controller: _dniController,
                     ),
                   ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: new BorderRadius.circular(10.0),
-                        ),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: "Fecha de nacimiento",
-                            contentPadding: EdgeInsets.all(15.0),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.lightGreen)),
-                          ),
-                          keyboardType: TextInputType.number,
-                          validator: (String value) => validation(value),
-                          showCursor: true,
-                          readOnly: true,
-                          controller: _fechaNacController,
-                          onTap: () => _selectDate(context),
-                        ),
-                      ),
-                    ),
-                  ),
+                  DatePicker(validation, _fechaNacController, _selectDate,
+                      "Fecha de nacimiento"),
                 ],
               ),
               Row(
@@ -198,7 +188,7 @@ class _NewPacienteState extends State<NewPaciente> {
                   Expanded(
                     child: FormInput(
                       labelText: "Peso",
-                      validator: (String value) => validation(value),
+                      validator: (String value) => validation(value, 4, null),
                       isNumber: true,
                       isText: false,
                       controller: _pesoController,
@@ -207,7 +197,7 @@ class _NewPacienteState extends State<NewPaciente> {
                   Expanded(
                     child: FormInput(
                       labelText: "Altura",
-                      validator: (String value) => validation(value),
+                      validator: (String value) => validation(value, null, 3.0),
                       isNumber: true,
                       isText: false,
                       controller: _alturaController,
@@ -215,101 +205,21 @@ class _NewPacienteState extends State<NewPaciente> {
                   )
                 ],
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
-                padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-                child: MultiSelectFormField(
-                  autovalidate: false,
-                  chipBackGroundColor: Colors.blue,
-                  chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-                  dialogTextStyle: TextStyle(fontWeight: FontWeight.normal),
-                  checkBoxActiveColor: Colors.blue,
-                  checkBoxCheckColor: Colors.white,
-                  dialogShapeBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                  ),
-                  title: Text(
-                    "Enfermedades Preexistentes",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  dataSource: _enfermedades,
-                  textField: 'code',
-                  valueField: 'value',
-                  okButtonLabel: 'OK',
-                  cancelButtonLabel: 'CANCELAR',
-                  hintWidget: Text('Seleccione uno o m\u00E1s'),
-                  initialValue: _enfermedadesPreexistentes,
-                  onSaved: (value) {
-                    if (value == null) return;
-                    setState(() {
-                      _enfermedadesPreexistentes = value;
-                    });
-                  },
-                ),
+              Multiselect(
+                labelText: 'Enfermedades Preexistentes',
+                data: _enfermedades,
+                hintText: 'Seleccione uno o m\u00E1s',
+                valuesSelect: _enfermedadesPreexistentes,
+                setter: _setEnfermedadesPreexistentes,
               ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 20.0),
-                padding: EdgeInsets.all(10.0),
-                child: MultiSelectFormField(
-                  autovalidate: false,
-                  chipBackGroundColor: Colors.blue,
-                  chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-                  dialogTextStyle: TextStyle(fontWeight: FontWeight.normal),
-                  checkBoxActiveColor: Colors.blue,
-                  checkBoxCheckColor: Colors.white,
-                  dialogShapeBorder: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                  ),
-                  title: Text(
-                    "Antecedentes Familiares",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  dataSource: _enfermedades,
-                  textField: 'code',
-                  valueField: 'value',
-                  okButtonLabel: 'OK',
-                  cancelButtonLabel: 'CANCELAR',
-                  hintWidget: Text('Seleccione uno o m\u00E1s'),
-                  initialValue: _antecedentesFamiliares,
-                  onSaved: (value) {
-                    if (value == null) return;
-                    setState(() {
-                      _antecedentesFamiliares = value;
-                    });
-                  },
-                ),
+              Multiselect(
+                labelText: 'Antecedentes Familiares',
+                data: _enfermedades,
+                hintText: 'Seleccione uno o m\u00E1s',
+                valuesSelect: _antecedentesFamiliares,
+                setter: _setAntecedentesFamiliares,
               ),
-              Container(
-                margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
-                child: FlatButton(
-                  padding: EdgeInsets.only(
-                    left: 48.0,
-                    right: 48.0,
-                    top: 10.0,
-                    bottom: 10.0,
-                  ),
-                  onPressed: () {
-                    if (NewPaciente.formKey.currentState.validate()) {
-                      PacienteDao().insertPaciente(buildPaciente());
-                      Navigator.pop(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MyHomePage()));
-                    }
-                  },
-                  child: Text(
-                    'Guardar',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  color: Colors.amber,
-                  textColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.amber)),
-                ),
-              ),
+              GradientButton(_save, "Guardar"),
             ],
           ),
         ),

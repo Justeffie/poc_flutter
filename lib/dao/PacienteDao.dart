@@ -1,8 +1,7 @@
 import 'dart:async';
-
-import 'package:flutter_poc/models/Paciente.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import '../models/Paciente.dart';
 
 class PacienteDao {
   final Future<Database> database = getDatabasesPath().then((String path) {
@@ -10,7 +9,10 @@ class PacienteDao {
       join(path, 'paciente_database.db'),
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE pacientes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, apellido TEXT, dni INTEGER, domicilio TEXT, peso REAL, altura REAL, fechaNacimiento INTEGER)",
+          "CREATE TABLE pacientes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT,"
+          " apellido TEXT, dni INTEGER, domicilio TEXT, peso REAL, altura REAL,"
+          " fechaNacimiento INTEGER, antecedentesFamiliares TEXT,"
+          "enfermedadesPreexistentes TEXT)",
         );
       },
       // Set the version. This executes the onCreate function and provides a
@@ -51,6 +53,8 @@ class PacienteDao {
         maps[i]['peso'],
         maps[i]['altura'],
         maps[i]['fechaNacimiento'],
+        maps[i]['enfermedadesPreexistentes'],
+        maps[i]['antecedentesFamiliares'],
       );
     });
   }
@@ -88,7 +92,7 @@ class PacienteDao {
     // Get a reference to the database.
     final db = await database;
 
-    // Remove the Paciente from the database.
+    // Remove thetype '_Uint8ArrayView' is not a subtype of type 'String' Paciente from the database.
     await db.delete('pacientes');
   }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_poc/dao/PacienteDao.dart';
+import 'dao/PacienteDao.dart';
 
 import './models/Paciente.dart';
-import './widgets/new_paciente.dart';
-import './widgets/paciente_list.dart';
+import 'widgets/new_paciente.dart';
+import 'widgets/paciente_list.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       ],
       title: 'Flutter POC',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepPurple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Pacientes'),
@@ -41,19 +41,6 @@ class MyHomePage extends StatefulWidget {
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
-}
-
-void _startAddNewPaciente(BuildContext ctx) {
-  showModalBottomSheet(
-    context: ctx,
-    builder: (_) {
-      return GestureDetector(
-        onTap: () {},
-        child: NewPaciente(),
-        behavior: HitTestBehavior.opaque,
-      );
-    },
-  );
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -88,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           );
         },
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
   }
 }

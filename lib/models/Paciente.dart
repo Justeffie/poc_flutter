@@ -7,28 +7,47 @@ class Paciente {
   String _domicilio;
   double _peso;
   double _altura;
-  List _enfermedadesPreexistentes;
-  List _enfermedadesAntecedentesFamiliares;
+  String _enfermedadesPreexistentes;
+  String _enfermedadesAntecedentesFamiliares;
 
   Paciente(this._id, this._name, this._apellido, this._dni, this._domicilio);
 
-  Paciente.fromDB(this._id, this._name, this._apellido, this._dni,
-      this._domicilio, this._peso, this._altura, this._fechaNacimiento);
+  Paciente.fromDB(
+    this._id,
+    this._name,
+    this._apellido,
+    this._dni,
+    this._domicilio,
+    this._peso,
+    this._altura,
+    this._fechaNacimiento,
+    this._enfermedadesAntecedentesFamiliares,
+    this._enfermedadesPreexistentes,
+  );
 
   Paciente.test(this._name, this._apellido, this._dni, this._domicilio,
       this._peso, this._altura,
       [this._id]);
 
-  Paciente.paraGuardar(this._name, this._apellido, this._dni, this._domicilio,
-      this._peso, this._altura, this._fechaNacimiento);
+  Paciente.paraGuardar(
+    this._name,
+    this._apellido,
+    this._dni,
+    this._domicilio,
+    this._peso,
+    this._altura,
+    this._fechaNacimiento,
+    this._enfermedadesAntecedentesFamiliares,
+    this._enfermedadesPreexistentes,
+  );
 
   Paciente.conNombreYApellido(this._name, this._apellido);
 
-  set enfermedadesAntecedentesFamiliares(List value) {
+  set enfermedadesAntecedentesFamiliares(String value) {
     _enfermedadesAntecedentesFamiliares = value;
   }
 
-  set enfermedadesPreexistentes(List value) {
+  set enfermedadesPreexistentes(String value) {
     _enfermedadesPreexistentes = value;
   }
 
@@ -40,10 +59,10 @@ class Paciente {
     _peso = value;
   }
 
-  List get enfermedadesAntecedentesFamiliares =>
+  String get enfermedadesAntecedentesFamiliares =>
       _enfermedadesAntecedentesFamiliares;
 
-  List get enfermedadesPreexistentes => _enfermedadesPreexistentes;
+  String get enfermedadesPreexistentes => _enfermedadesPreexistentes;
 
   double get altura => _altura;
 
@@ -70,7 +89,9 @@ class Paciente {
       'domicilio': _domicilio,
       'peso': _peso,
       'altura': _altura,
-      'fechaNacimiento': _fechaNacimiento
+      'fechaNacimiento': _fechaNacimiento,
+      'antecedentesFamiliares': _enfermedadesAntecedentesFamiliares,
+      'enfermedadesPreexistentes': _enfermedadesPreexistentes
     };
   }
 
@@ -80,9 +101,11 @@ class Paciente {
         ' _name: $_name,'
         ' _apellido: $_apellido,'
         ' _dni: $_dni,'
-        ' _domicilio: $_domicilio, '
-        '_peso: $_peso,'
+        ' _domicilio: $_domicilio,'
+        ' _peso: $_peso,'
         ' _altura: $_altura,'
-        ' fechaNacimiento: $_fechaNacimiento}';
+        ' fechaNacimiento: $_fechaNacimiento},'
+        ' antecedentesFamiliares: $_enfermedadesAntecedentesFamiliares, '
+        ' enfermedadesPreexistentes: $_enfermedadesPreexistentes}';
   }
 }

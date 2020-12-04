@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../utils/paciente_utils.dart';
 
-class PacienteDetailsText extends StatelessWidget {
+class DetailsText extends StatelessWidget {
   final String labelText;
   final String detailText;
 
-  PacienteDetailsText({this.labelText, this.detailText});
+  DetailsText({this.labelText, this.detailText});
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

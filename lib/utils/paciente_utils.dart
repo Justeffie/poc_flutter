@@ -1,5 +1,5 @@
 import 'package:age/age.dart';
-import 'package:flutter_poc/models/Paciente.dart';
+import '../models/Paciente.dart';
 
 class PacienteUtils {
   String getEdad(int date) {
@@ -33,5 +33,9 @@ class PacienteUtils {
 
   String getPeso(Paciente paciente) {
     return paciente.peso.toString() + 'kg';
+  }
+
+  String generateEnfermedades(List<String> enfermedades) {
+    return enfermedades.join(", ");
   }
 }
