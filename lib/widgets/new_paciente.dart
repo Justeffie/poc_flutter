@@ -77,7 +77,7 @@ class NewPaciente extends StatelessWidget {
     }
 
     if (tam != value.length) {
-      return "El campo debe tener 8 digitos";
+      return "Debe tener 8 d\u00EDgitos";
     }
 
     if (value.length > tam) {
