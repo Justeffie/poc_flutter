@@ -10,22 +10,22 @@ class PacienteList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
-        child: pacientes.isEmpty
-            ? Center(
+      child: pacientes.isEmpty
+          ? Container(
+              child: Center(
                 child: Text(
                   'No hay pacientes agregados',
                   style: ThemeData.light().textTheme.headline6,
                   textAlign: TextAlign.center,
                 ),
-              )
-            : ListView.builder(
-                itemCount: pacientes.length,
-                itemBuilder: (context, index) {
-                  return PacienteCard(pacientes[index]);
-                },
               ),
-      ),
+            )
+          : ListView.builder(
+              itemCount: pacientes.length,
+              itemBuilder: (context, index) {
+                return PacienteCard(pacientes[index]);
+              },
+            ),
     );
   }
 }

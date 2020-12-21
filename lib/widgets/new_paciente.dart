@@ -71,6 +71,20 @@ class NewPaciente extends StatelessWidget {
     }
   }
 
+  String dniValidation(String value, int tam) {
+    if (value.isEmpty) {
+      return "Campo requerido";
+    }
+
+    if (tam != value.length) {
+      return "El campo debe tener 8 digitos";
+    }
+
+    if (value.length > tam) {
+      return "No es un valor v\u00E1lido ";
+    }
+  }
+
   DateTime selectedDate = DateTime.now();
 
   Future<void> _selectDate(BuildContext context) async {
@@ -130,7 +144,7 @@ class NewPaciente extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Form(
-          key: NewPaciente.formKey,
+          key: formKey,
           child: Column(
             children: [
               SizedBox(
@@ -173,7 +187,7 @@ class NewPaciente extends StatelessWidget {
                   Expanded(
                     child: FormInput(
                       labelText: "DNI",
-                      validator: (String value) => validation(value, 9, null),
+                      validator: (String value) => dniValidation(value, 8),
                       isNumber: true,
                       isText: false,
                       controller: _dniController,
