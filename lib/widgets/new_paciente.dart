@@ -1,11 +1,17 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
-import '../dao/PacienteDao.dart';
+import 'package:flutter_poc/models/Enfermedad.dart';
+import 'package:flutter_poc/dao/EnfermedadDaoHttpImpl.dart';
+import 'package:flutter_poc/dao/PacienteDaoHttpImpl.dart';
+import '../dao/PacienteDaoDBImpl.dart';
 import '../main.dart';
 import '../components/gradient_button.dart';
 import '../components/datepicker.dart';
 import '../components/multiselect.dart';
 import '../components/form_imput.dart';
 import '../models/Paciente.dart';
+import 'package:http/http.dart' as http;
 
 class NewPaciente extends StatelessWidget {
   static final formKey = new GlobalKey<FormState>();
@@ -16,48 +22,12 @@ class NewPaciente extends StatelessWidget {
   final _pesoController = TextEditingController();
   final _alturaController = TextEditingController();
   final _domicilioController = TextEditingController();
-  List _enfermedadesPreexistentes;
-  List _antecedentesFamiliares;
+  HashMap<int, dynamic> _enfermedadesPreexistentes;
+  HashMap<int, dynamic> _antecedentesFamiliares;
 
-  List get _enfermedades {
-    return [
-      {
-        "code": "Diabetes",
-        "value": "Diabetes",
-      },
-      {
-        "code": "Cancer",
-        "value": "Cancer",
-      },
-      {
-        "code": "Asma",
-        "value": "Asma",
-      },
-      {
-        "code": "Obesidad",
-        "value": "Obesidad",
-      },
-      {
-        "code": "Parkinson",
-        "value": "Parkinson",
-      },
-      {
-        "code": "Artrosis",
-        "value": "Artrosis",
-      },
-      {
-        "code": "EPOC",
-        "value": "EPOC",
-      },
-      {
-        "code": "Epilepsia",
-        "value": "Epilepsia",
-      },
-      {
-        "code": "Lupus",
-        "value": "Lupus",
-      },
-    ];
+  Future<List<dynamic>> fetchEnfermedades(http.Client client) {
+    EnfermedadDaoHttpImpl httpDao = EnfermedadDaoHttpImpl();
+    return httpDao.fetchEnfermedades(client);
   }
 
   String validation(String value, int campoLength, double number) {
@@ -99,26 +69,26 @@ class NewPaciente extends StatelessWidget {
       double.tryParse(_pesoController.text),
       double.tryParse(_alturaController.text),
       selectedDate.toLocal().millisecondsSinceEpoch,
-      _antecedentesFamiliares != null ? _antecedentesFamiliares.join(', ') : "",
-      _enfermedadesPreexistentes != null
-          ? _enfermedadesPreexistentes.join(', ')
-          : "",
+      "", ""
     );
   }
 
   _save(BuildContext context) {
     if (NewPaciente.formKey.currentState.validate()) {
-      PacienteDao().insertPaciente(buildPaciente());
+      PacienteDaoHttpImpl httpDao = PacienteDaoHttpImpl();
+      httpDao.savePaciente(http.Client(), buildPaciente());
+
+      PacienteDaoDBImpl().insertPaciente(buildPaciente());
       Navigator.pop(
           context, MaterialPageRoute(builder: (context) => MyHomePage()));
     }
   }
 
-  _setEnfermedadesPreexistentes(List enfermedades) {
+  _setEnfermedadesPreexistentes(HashMap<int, dynamic> enfermedades) {
     _enfermedadesPreexistentes = enfermedades;
   }
 
-  _setAntecedentesFamiliares(List enfermedades) {
+  _setAntecedentesFamiliares(HashMap<int, dynamic> enfermedades) {
     _antecedentesFamiliares = enfermedades;
   }
 
@@ -205,19 +175,34 @@ class NewPaciente extends StatelessWidget {
                   )
                 ],
               ),
-              Multiselect(
-                labelText: 'Enfermedades Preexistentes',
-                data: _enfermedades,
-                hintText: 'Seleccione uno o m\u00E1s',
-                valuesSelect: _enfermedadesPreexistentes,
-                setter: _setEnfermedadesPreexistentes,
-              ),
-              Multiselect(
-                labelText: 'Antecedentes Familiares',
-                data: _enfermedades,
-                hintText: 'Seleccione uno o m\u00E1s',
-                valuesSelect: _antecedentesFamiliares,
-                setter: _setAntecedentesFamiliares,
+              FutureBuilder<List<dynamic>>(
+                future: fetchEnfermedades(http.Client()),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Column(
+                      children: [
+                        Multiselect(
+                          labelText: 'Enfermedades Preexistentes',
+                          data: snapshot.data,
+                          hintText: 'Seleccione uno o m\u00E1s',
+                          valuesSelect: _enfermedadesPreexistentes,
+                          setter: _setEnfermedadesPreexistentes,
+                        ),
+                        Multiselect(
+                          labelText: 'Antecedentes Familiares',
+                          data: snapshot.data,
+                          hintText: 'Seleccione uno o m\u00E1s',
+                          valuesSelect: _antecedentesFamiliares,
+                          setter: _setAntecedentesFamiliares,
+                        )
+                      ],
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+                  // By default, show a loading spinner.
+                  return CircularProgressIndicator();
+                },
               ),
               GradientButton(_save, "Guardar"),
             ],

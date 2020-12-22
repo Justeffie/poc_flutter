@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'dao/PacienteDao.dart';
+import 'dao/PacienteDaoDBImpl.dart';
+import 'dao/PacienteDaoHttpImpl.dart';
+import 'package:http/http.dart' as http;
 
 import './models/Paciente.dart';
 import 'widgets/new_paciente.dart';
@@ -9,8 +11,6 @@ import 'widgets/paciente_list.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  /*PacienteDao pacientedao = PacienteDao();
-  pacientedao.deleteAll();*/
   runApp(MyApp());
 }
 
@@ -45,15 +45,26 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<Paciente> _pacientes = [];
+  List<dynamic> _pacientesHttp;
+
+
+  @override
+  void initState() {
+    PacienteDaoHttpImpl().fetchPacientes(http.Client()).then((value) => setState(() {
+      _pacientesHttp = value;
+    }));
+    /*PacienteDaoDBImpl().pacientes().then((value) => {
+      setState(() {
+        _pacientes = value;
+      })
+    });*/
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    PacienteDao().pacientes().then((value) => {
-          setState(() {
-            _pacientes = value;
-          })
-        });
 
+    print('el main se sigue ejecutando');
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -61,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          PacienteList(pacientes: _pacientes),
+          PacienteList(pacientes: _pacientesHttp),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

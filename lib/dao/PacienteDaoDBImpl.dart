@@ -3,7 +3,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/Paciente.dart';
 
-class PacienteDao {
+class PacienteDaoDBImpl {
   final Future<Database> database = getDatabasesPath().then((String path) {
     return openDatabase(
       join(path, 'paciente_database.db'),
@@ -17,7 +17,7 @@ class PacienteDao {
       },
       // Set the version. This executes the onCreate function and provides a
       // path to perform database upgrades and downgrades.
-      version: 1,
+      version: 2,
     );
   });
 

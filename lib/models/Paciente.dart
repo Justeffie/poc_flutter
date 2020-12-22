@@ -7,6 +7,8 @@ class Paciente {
   String _domicilio;
   double _peso;
   double _altura;
+  List _enfermedadesPreexistentesEnum;
+  List _enfermedadesAntecedentesFamiliaresEnum;
   String _enfermedadesPreexistentes;
   String _enfermedadesAntecedentesFamiliares;
 
@@ -24,6 +26,34 @@ class Paciente {
     this._enfermedadesAntecedentesFamiliares,
     this._enfermedadesPreexistentes,
   );
+
+  Paciente.fromHttp(
+    this._id,
+    this._name,
+    this._apellido,
+    this._dni,
+    this._domicilio,
+    this._peso,
+    this._altura,
+    this._fechaNacimiento,
+    this._enfermedadesPreexistentesEnum,
+    this._enfermedadesAntecedentesFamiliaresEnum,
+  );
+
+  factory Paciente.fromJson(Map<String, dynamic> json) {
+    return Paciente.fromHttp(
+      json['id'],
+      json['name'],
+      json['apellido'],
+      json['dni'],
+      json['domicilio'],
+      json['peso'],
+      json['altura'],
+      json['fechaNacimiento'],
+      json['enfermedadesPreexistentes'],
+      json['enfermedadesAntecedentesFamiliares']
+    );
+  }
 
   Paciente.test(this._name, this._apellido, this._dni, this._domicilio,
       this._peso, this._altura,
@@ -63,6 +93,20 @@ class Paciente {
       _enfermedadesAntecedentesFamiliares;
 
   String get enfermedadesPreexistentes => _enfermedadesPreexistentes;
+
+
+  List get enfermedadesPreexistentesEnum => _enfermedadesPreexistentesEnum;
+
+  set enfermedadesPreexistentesEnum(List value) {
+    _enfermedadesPreexistentesEnum = value;
+  }
+
+  List get enfermedadesAntecedentesFamiliaresEnum =>
+      _enfermedadesAntecedentesFamiliaresEnum;
+
+  set enfermedadesAntecedentesFamiliaresEnum(List value) {
+    _enfermedadesAntecedentesFamiliaresEnum = value;
+  }
 
   double get altura => _altura;
 
@@ -108,4 +152,5 @@ class Paciente {
         ' antecedentesFamiliares: $_enfermedadesAntecedentesFamiliares, '
         ' enfermedadesPreexistentes: $_enfermedadesPreexistentes}';
   }
+
 }

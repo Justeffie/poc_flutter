@@ -107,26 +107,24 @@ class PacienteDetails extends StatelessWidget {
                     labelText: 'Altura: ',
                     detailText: _paciente.altura.toStringAsFixed(2),
                   ),
-                  _paciente.enfermedadesPreexistentes.isNotEmpty
+                  _paciente.enfermedadesPreexistentesEnum.isNotEmpty
                       ? DetailsChips(
                           labelText: "Enfermedades preexistentes: ",
-                          dataText: _paciente.enfermedadesPreexistentes,
+                          data: _paciente.enfermedadesPreexistentesEnum,
                         )
                       : SizedBox(
                           height: 2,
                         ),
                   SizedBox(
-                    height: _paciente.enfermedadesAntecedentesFamiliares
-                                .isNotEmpty &&
-                            _paciente.enfermedadesPreexistentes.isNotEmpty
+                    height: _paciente.enfermedadesAntecedentesFamiliaresEnum.isNotEmpty &&
+                            _paciente.enfermedadesPreexistentesEnum.isNotEmpty
                         ? 20
                         : 2,
                   ),
-                  _paciente.enfermedadesAntecedentesFamiliares.isNotEmpty
+                  _paciente.enfermedadesAntecedentesFamiliaresEnum.isNotEmpty
                       ? DetailsChips(
                           labelText: "Antecedentes familiares: ",
-                          dataText:
-                              _paciente.enfermedadesAntecedentesFamiliares,
+                          data: _paciente.enfermedadesAntecedentesFamiliaresEnum,
                         )
                       : SizedBox(
                           height: 2,

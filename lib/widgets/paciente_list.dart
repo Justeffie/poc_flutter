@@ -11,7 +11,7 @@ class PacienteList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        child: pacientes.isEmpty
+        child: pacientes == null  || pacientes.isEmpty
             ? Center(
                 child: Text(
                   'No hay pacientes agregados',
