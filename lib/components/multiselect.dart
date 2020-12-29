@@ -1,8 +1,9 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:multiselect_formfield/multiselect_formfield.dart';
+import 'package:flutter_poc/models/Enfermedad.dart';
 import '../utils/constants.dart';
+import 'multiselect_formfield/multiselect_formfield.dart';
 
 class Multiselect extends StatefulWidget {
   final data;
@@ -49,8 +50,8 @@ class _MultiselectState extends State<Multiselect> {
           style: TextStyle(fontSize: 16),
         ),
         dataSource: widget.data,
-        textField: 'descripcion',
-        valueField: 'id',
+        textField: 'nombre',
+        valueField: 'code',
         okButtonLabel: 'OK',
         cancelButtonLabel: 'CANCELAR',
         hintWidget: Text(widget.hintText),
@@ -58,18 +59,24 @@ class _MultiselectState extends State<Multiselect> {
         onSaved: (value) {
           if (value == null) return;
           setState(() {
-            List<dynamic> enfermedades = widget.data;
+            List<Enfermedad> enfermedades = widget.data;
             HashMap<int, dynamic> enfermedadesSeleccionadas = HashMap();
+            List<Enfermedad> enfermedadesSeleccionadasList = List();
 
             for(int i = 0; i < value.length; ++i) {
               for(int j = 0; j < enfermedades.length; ++j) {
-                if(enfermedades[j]["id"] == value[i]) {
-                  enfermedadesSeleccionadas.putIfAbsent(enfermedades[0]["id"], () => enfermedades[0]["descripcion"]);
+                if(enfermedades[j].code == value[i]) {
+                  enfermedadesSeleccionadas.putIfAbsent(enfermedades[0].code, () => enfermedades[0].nombre);
+                  enfermedadesSeleccionadasList.add(enfermedades[j]);
                 }
+                /*if(enfermedades[j]["id"] == value[i]) {
+                  enfermedadesSeleccionadas.putIfAbsent(enfermedades[0]["id"], () => enfermedades[0]["descripcion"]);
+                  enfermedadesSeleccionadasList.add(enfermedades[j]);
+                }*/
               }
             }
             widget.valuesSelect = value;
-            widget.setter(enfermedadesSeleccionadas);
+            widget.setter(enfermedadesSeleccionadasList);
           });
         },
       ),

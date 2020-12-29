@@ -22,4 +22,10 @@ class Enfermedad {
         json['descripcion']
     );
   }
+
+  @override
+  String toString() {
+    return '{\"id\": $_code, \"descripcion\": \"$_nombre\"}';
+  }
+
 }

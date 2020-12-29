@@ -1,10 +1,7 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_poc/models/Enfermedad.dart';
 import 'package:flutter_poc/dao/EnfermedadDaoHttpImpl.dart';
 import 'package:flutter_poc/dao/PacienteDaoHttpImpl.dart';
-import '../dao/PacienteDaoDBImpl.dart';
 import '../main.dart';
 import '../components/gradient_button.dart';
 import '../components/datepicker.dart';
@@ -22,8 +19,8 @@ class NewPaciente extends StatelessWidget {
   final _pesoController = TextEditingController();
   final _alturaController = TextEditingController();
   final _domicilioController = TextEditingController();
-  HashMap<int, dynamic> _enfermedadesPreexistentes;
-  HashMap<int, dynamic> _antecedentesFamiliares;
+  List<Enfermedad> _enfermedadesPreexistentes;
+  List<Enfermedad> _antecedentesFamiliares;
 
   Future<List<dynamic>> fetchEnfermedades(http.Client client) {
     EnfermedadDaoHttpImpl httpDao = EnfermedadDaoHttpImpl();
@@ -60,8 +57,8 @@ class NewPaciente extends StatelessWidget {
     }
   }
 
-  Paciente buildPaciente() {
-    return Paciente.paraGuardar(
+  Paciente buildPacienteHttp() {
+    return Paciente.paraGuardarHttp(
       _nombreController.text,
       _apellidoController.text,
       int.tryParse(_dniController.text),
@@ -69,26 +66,25 @@ class NewPaciente extends StatelessWidget {
       double.tryParse(_pesoController.text),
       double.tryParse(_alturaController.text),
       selectedDate.toLocal().millisecondsSinceEpoch,
-      "", ""
+        _antecedentesFamiliares, _enfermedadesPreexistentes
     );
   }
 
   _save(BuildContext context) {
     if (NewPaciente.formKey.currentState.validate()) {
       PacienteDaoHttpImpl httpDao = PacienteDaoHttpImpl();
-      httpDao.savePaciente(http.Client(), buildPaciente());
+      httpDao.savePaciente(http.Client(), buildPacienteHttp());
 
-      PacienteDaoDBImpl().insertPaciente(buildPaciente());
       Navigator.pop(
           context, MaterialPageRoute(builder: (context) => MyHomePage()));
     }
   }
 
-  _setEnfermedadesPreexistentes(HashMap<int, dynamic> enfermedades) {
+  _setEnfermedadesPreexistentes(List<Enfermedad> enfermedades) {
     _enfermedadesPreexistentes = enfermedades;
   }
 
-  _setAntecedentesFamiliares(HashMap<int, dynamic> enfermedades) {
+  _setAntecedentesFamiliares(List<Enfermedad> enfermedades) {
     _antecedentesFamiliares = enfermedades;
   }
 

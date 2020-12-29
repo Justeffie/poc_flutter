@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'dao/PacienteDaoDBImpl.dart';
 import 'dao/PacienteDaoHttpImpl.dart';
 import 'package:http/http.dart' as http;
 
@@ -44,22 +43,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Paciente> _pacientes = [];
-  List<dynamic> _pacientesHttp;
 
-
-  @override
-  void initState() {
-    PacienteDaoHttpImpl().fetchPacientes(http.Client()).then((value) => setState(() {
-      _pacientesHttp = value;
-    }));
-    /*PacienteDaoDBImpl().pacientes().then((value) => {
-      setState(() {
-        _pacientes = value;
-      })
-    });*/
+  /* Metodo que hace la consulta al backend para traer los pacientes */
+  Future<List<Paciente>> fetchPacientes(http.Client client) {
+    PacienteDaoHttpImpl httpDao = PacienteDaoHttpImpl();
+    return httpDao.fetchPacientes(client);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -72,19 +61,36 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          PacienteList(pacientes: _pacientesHttp),
+          /* Este componente hace un busqueda asincronica,
+          *  Mientras no tenga la respuesta renderiza un componente, cuando
+          *  llega la respuesta renderiza otro dependiendo el tipo de respuesta*/
+          FutureBuilder<List<dynamic>>(
+            future: fetchPacientes(http.Client()),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return PacienteList(pacientes: snapshot.data);
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              // By default, show a loading spinner.
+              return CircularProgressIndicator();
+            },
+          )
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
+          /* Se hace un push asincrono, cuando se vuelve a esta pantalla
+          se hace un setState para que se vuelve a ejecutar el build y se traiga
+          otra vez la lista de pacientes */
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => NewPaciente(),
             ),
-          );
+          ).then((value) => setState((){}));
         },
       ),
     );

@@ -71,6 +71,18 @@ class Paciente {
     this._enfermedadesPreexistentes,
   );
 
+  Paciente.paraGuardarHttp(
+    this._name,
+    this._apellido,
+    this._dni,
+    this._domicilio,
+    this._peso,
+    this._altura,
+    this._fechaNacimiento,
+    this._enfermedadesAntecedentesFamiliaresEnum,
+    this._enfermedadesPreexistentesEnum,
+  );
+
   Paciente.conNombreYApellido(this._name, this._apellido);
 
   set enfermedadesAntecedentesFamiliares(String value) {
@@ -134,8 +146,8 @@ class Paciente {
       'peso': _peso,
       'altura': _altura,
       'fechaNacimiento': _fechaNacimiento,
-      'antecedentesFamiliares': _enfermedadesAntecedentesFamiliares,
-      'enfermedadesPreexistentes': _enfermedadesPreexistentes
+      'antecedentesFamiliares': _enfermedadesAntecedentesFamiliaresEnum,
+      'enfermedadesPreexistentes': _enfermedadesPreexistentesEnum
     };
   }
 
@@ -153,4 +165,16 @@ class Paciente {
         ' enfermedadesPreexistentes: $_enfermedadesPreexistentes}';
   }
 
+  String toJson() {
+    return '{\"id\": $_id,'
+        ' \"name\": \"$_name\",'
+        ' \"apellido\": \"$_apellido\",'
+        ' \"dni\": $_dni,'
+        ' \"domicilio\": \"$_domicilio\",'
+        ' \"peso\": $_peso,'
+        ' \"altura\": $_altura,'
+        ' \"fechaNacimiento\": $_fechaNacimiento,'
+        ' \"enfermedadesAntecedentesFamiliares\": $_enfermedadesAntecedentesFamiliaresEnum, '
+        ' \"enfermedadesPreexistentes\": $_enfermedadesPreexistentesEnum}';
+  }
 }
