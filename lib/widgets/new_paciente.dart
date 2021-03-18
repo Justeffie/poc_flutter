@@ -1,4 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_poc/components/select_file.dart';
+import 'package:flutter_poc/models/Archivo.dart';
 import 'package:flutter_poc/models/Enfermedad.dart';
 import 'package:flutter_poc/dao/EnfermedadDaoHttpImpl.dart';
 import 'package:flutter_poc/dao/PacienteDaoHttpImpl.dart';
@@ -21,6 +26,8 @@ class NewPaciente extends StatelessWidget {
   final _domicilioController = TextEditingController();
   List<Enfermedad> _enfermedadesPreexistentes;
   List<Enfermedad> _antecedentesFamiliares;
+  File file;
+  int idFile;
 
   Future<List<dynamic>> fetchEnfermedades(http.Client client) {
     EnfermedadDaoHttpImpl httpDao = EnfermedadDaoHttpImpl();
@@ -59,15 +66,16 @@ class NewPaciente extends StatelessWidget {
 
   Paciente buildPacienteHttp() {
     return Paciente.paraGuardarHttp(
-      _nombreController.text,
-      _apellidoController.text,
-      int.tryParse(_dniController.text),
-      _domicilioController.text,
-      double.tryParse(_pesoController.text),
-      double.tryParse(_alturaController.text),
-      selectedDate.toLocal().millisecondsSinceEpoch,
-        _antecedentesFamiliares, _enfermedadesPreexistentes
-    );
+        _nombreController.text,
+        _apellidoController.text,
+        int.tryParse(_dniController.text),
+        _domicilioController.text,
+        double.tryParse(_pesoController.text),
+        double.tryParse(_alturaController.text),
+        selectedDate.toLocal().millisecondsSinceEpoch,
+        _antecedentesFamiliares,
+        _enfermedadesPreexistentes,
+        idFile);
   }
 
   _save(BuildContext context) {
@@ -86,6 +94,11 @@ class NewPaciente extends StatelessWidget {
 
   _setAntecedentesFamiliares(List<Enfermedad> enfermedades) {
     _antecedentesFamiliares = enfermedades;
+  }
+
+  _setFile(File fileSelected, int id) {
+    file = fileSelected;
+    idFile = id;
   }
 
   @override
@@ -194,11 +207,19 @@ class NewPaciente extends StatelessWidget {
                       ],
                     );
                   } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
+                    return Text(
+                      "${snapshot.error}",
+                      textAlign: TextAlign.center,
+                    );
                   }
                   // By default, show a loading spinner.
                   return CircularProgressIndicator();
                 },
+              ),
+              SelectFile(
+                labelText: "Historial cl\u00EDnico:",
+                buttonText: "Adjuntar archivo",
+                setter: _setFile,
               ),
               GradientButton(_save, "Guardar"),
             ],

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_poc/components/details_historiaClinica.dart';
+import 'package:flutter_poc/dao/ArchivoDaoHttpImpl.dart';
+import 'package:flutter_poc/models/Archivo.dart';
 import '../components/details_text.dart';
 import '../utils/constants.dart';
 import '../utils/paciente_utils.dart';
@@ -113,28 +116,43 @@ class PacienteDetails extends StatelessWidget {
                           data: _paciente.enfermedadesPreexistentesEnum,
                         )
                       : SizedBox(
-                          height: 2,
+                          height: 0,
                         ),
                   SizedBox(
-                    height: _paciente.enfermedadesAntecedentesFamiliaresEnum.isNotEmpty &&
+                    height: _paciente.enfermedadesAntecedentesFamiliaresEnum
+                                .isNotEmpty &&
                             _paciente.enfermedadesPreexistentesEnum.isNotEmpty
                         ? 20
-                        : 2,
+                        : 0,
                   ),
                   _paciente.enfermedadesAntecedentesFamiliaresEnum.isNotEmpty
                       ? DetailsChips(
                           labelText: "Antecedentes familiares: ",
-                          data: _paciente.enfermedadesAntecedentesFamiliaresEnum,
+                          data:
+                              _paciente.enfermedadesAntecedentesFamiliaresEnum,
                         )
                       : SizedBox(
-                          height: 2,
+                          height: 0,
                         ),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  _paciente.enfermedadesAntecedentesFamiliares != null &&
+                          _paciente.enfermedadesPreexistentes != null
+                      ? SizedBox(
+                          height: 0,
+                        )
+                      : SizedBox(
+                          height: 20,
+                        ),
+                  _paciente.historiaClinica != null
+                      ? DetailsHistoriaClinica(
+                          labelText: "Historial Clinico:",
+                          historiaId: _paciente.historiaClinica,
+                        )
+                      : SizedBox(
+                          height: 20,
+                        ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

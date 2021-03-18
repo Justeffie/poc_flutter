@@ -11,6 +11,7 @@ class Paciente {
   List _enfermedadesAntecedentesFamiliaresEnum;
   String _enfermedadesPreexistentes;
   String _enfermedadesAntecedentesFamiliares;
+  int _historiaClinica;
 
   Paciente(this._id, this._name, this._apellido, this._dni, this._domicilio);
 
@@ -28,31 +29,35 @@ class Paciente {
   );
 
   Paciente.fromHttp(
-    this._id,
-    this._name,
-    this._apellido,
-    this._dni,
-    this._domicilio,
-    this._peso,
-    this._altura,
-    this._fechaNacimiento,
-    this._enfermedadesPreexistentesEnum,
-    this._enfermedadesAntecedentesFamiliaresEnum,
-  );
+      this._id,
+      this._name,
+      this._apellido,
+      this._dni,
+      this._domicilio,
+      this._peso,
+      this._altura,
+      this._fechaNacimiento,
+      this._enfermedadesPreexistentesEnum,
+      this._enfermedadesAntecedentesFamiliaresEnum,
+      this._historiaClinica);
 
   factory Paciente.fromJson(Map<String, dynamic> json) {
+    int historiaClinica;
+    if (json['historiaClinica'] != null) {
+      historiaClinica = json['historiaClinica']['id'];
+    }
     return Paciente.fromHttp(
-      json['id'],
-      json['name'],
-      json['apellido'],
-      json['dni'],
-      json['domicilio'],
-      json['peso'],
-      json['altura'],
-      json['fechaNacimiento'],
-      json['enfermedadesPreexistentes'],
-      json['enfermedadesAntecedentesFamiliares']
-    );
+        json['id'],
+        json['name'],
+        json['apellido'],
+        json['dni'],
+        json['domicilio'],
+        json['peso'],
+        json['altura'],
+        json['fechaNacimiento'],
+        json['enfermedadesPreexistentes'],
+        json['enfermedadesAntecedentesFamiliares'],
+        historiaClinica);
   }
 
   Paciente.test(this._name, this._apellido, this._dni, this._domicilio,
@@ -72,16 +77,16 @@ class Paciente {
   );
 
   Paciente.paraGuardarHttp(
-    this._name,
-    this._apellido,
-    this._dni,
-    this._domicilio,
-    this._peso,
-    this._altura,
-    this._fechaNacimiento,
-    this._enfermedadesAntecedentesFamiliaresEnum,
-    this._enfermedadesPreexistentesEnum,
-  );
+      this._name,
+      this._apellido,
+      this._dni,
+      this._domicilio,
+      this._peso,
+      this._altura,
+      this._fechaNacimiento,
+      this._enfermedadesAntecedentesFamiliaresEnum,
+      this._enfermedadesPreexistentesEnum,
+      this._historiaClinica);
 
   Paciente.conNombreYApellido(this._name, this._apellido);
 
@@ -105,7 +110,6 @@ class Paciente {
       _enfermedadesAntecedentesFamiliares;
 
   String get enfermedadesPreexistentes => _enfermedadesPreexistentes;
-
 
   List get enfermedadesPreexistentesEnum => _enfermedadesPreexistentesEnum;
 
@@ -136,6 +140,11 @@ class Paciente {
 
   int get id => _id;
 
+  int get historiaClinica => _historiaClinica;
+
+  set historiaClinica(int historiaClinica) =>
+      _historiaClinica = historiaClinica;
+
   Map<String, dynamic> toMap() {
     return {
       'id': _id,
@@ -147,7 +156,8 @@ class Paciente {
       'altura': _altura,
       'fechaNacimiento': _fechaNacimiento,
       'antecedentesFamiliares': _enfermedadesAntecedentesFamiliaresEnum,
-      'enfermedadesPreexistentes': _enfermedadesPreexistentesEnum
+      'enfermedadesPreexistentes': _enfermedadesPreexistentesEnum,
+      'historiaClinica': _historiaClinica
     };
   }
 
@@ -175,6 +185,7 @@ class Paciente {
         ' \"altura\": $_altura,'
         ' \"fechaNacimiento\": $_fechaNacimiento,'
         ' \"enfermedadesAntecedentesFamiliares\": $_enfermedadesAntecedentesFamiliaresEnum, '
-        ' \"enfermedadesPreexistentes\": $_enfermedadesPreexistentesEnum}';
+        ' \"enfermedadesPreexistentes\": $_enfermedadesPreexistentesEnum,'
+        ' \"historiaClinica\": $_historiaClinica}';
   }
 }

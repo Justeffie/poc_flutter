@@ -42,7 +42,7 @@ class PacienteCardNameContainer extends StatelessWidget {
           Text(
             apellido,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: apellido.length >= 11 ? 15 : 16,
               color: Colors.white,
               fontWeight: FontWeight.bold,
             ),

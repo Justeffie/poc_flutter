@@ -1,5 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_poc/providers/push_notifications_provider.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'dao/PacienteDaoHttpImpl.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,18 +20,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: [GlobalMaterialLocalizations.delegate],
-      supportedLocales: [
-        const Locale('es'),
-        const Locale('en'),
-      ],
-      title: 'Flutter POC',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return OverlaySupport(
+      child: MaterialApp(
+        localizationsDelegates: [GlobalMaterialLocalizations.delegate],
+        supportedLocales: [
+          const Locale('es'),
+          const Locale('en'),
+        ],
+        title: 'Flutter POC',
+        theme: ThemeData(
+          primarySwatch: Colors.deepPurple,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: MyHomePage(title: 'Pacientes'),
       ),
-      home: MyHomePage(title: 'Pacientes'),
     );
   }
 }
@@ -43,7 +48,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   /* Metodo que hace la consulta al backend para traer los pacientes */
   Future<List<Paciente>> fetchPacientes(http.Client client) {
     PacienteDaoHttpImpl httpDao = PacienteDaoHttpImpl();
@@ -51,8 +55,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    PushNotificationsProvider().initNotifications();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     print('el main se sigue ejecutando');
     return Scaffold(
       appBar: AppBar(
@@ -70,10 +79,17 @@ class _MyHomePageState extends State<MyHomePage> {
               if (snapshot.hasData) {
                 return PacienteList(pacientes: snapshot.data);
               } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
+                print(snapshot.error);
+                return Center(
+                  child: Text(
+                    "Error al intentar recuperar la lista de pacientes",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                );
               }
               // By default, show a loading spinner.
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             },
           )
         ],
@@ -90,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
             MaterialPageRoute(
               builder: (context) => NewPaciente(),
             ),
-          ).then((value) => setState((){}));
+          ).then((value) => setState(() {}));
         },
       ),
     );

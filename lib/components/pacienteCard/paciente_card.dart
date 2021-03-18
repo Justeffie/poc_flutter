@@ -28,13 +28,13 @@ class PacienteCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: InkWell(
-          onTap: () => {
+          onTap: () async {
             Navigator.push(
               context,
               CupertinoPageRoute(
                 builder: (context) => PacienteDetails(_paciente),
               ),
-            )
+            );
           },
           child: Row(
             children: [
