@@ -79,7 +79,7 @@ class MultiSelectFormField extends FormField<dynamic> {
                     labelStyle: chipLabelStyle,
                     backgroundColor: chipBackGroundColor,
                     label: Text(
-                      existingItem.nombre,
+                      existingItem.descripcion,
                       overflow: TextOverflow.ellipsis,
                       // style: TextStyle(color: Colors.red),
                     ),
@@ -91,41 +91,42 @@ class MultiSelectFormField extends FormField<dynamic> {
             }
 
             return InkWell(
+              onTap: !enabled
+                  ? null
+                  : () async {
+                      List initialSelected = state.value;
+                      if (initialSelected == null) {
+                        initialSelected = List();
+                      }
 
-              onTap:  !enabled ? null :() async {
-                List initialSelected = state.value;
-                if (initialSelected == null) {
-                  initialSelected = List();
-                }
+                      final items = List<MultiSelectDialogItem<dynamic>>();
+                      dataSource.forEach((item) {
+                        items.add(
+                            MultiSelectDialogItem(item.code, item.descripcion));
+                      });
 
-                final items = List<MultiSelectDialogItem<dynamic>>();
-                dataSource.forEach((item) {
-                  items.add(
-                      MultiSelectDialogItem(item.code, item.nombre));
-                });
+                      List selectedValues = await showDialog<List>(
+                        context: state.context,
+                        builder: (BuildContext context) {
+                          return MultiSelectDialog(
+                            title: title,
+                            okButtonLabel: okButtonLabel,
+                            cancelButtonLabel: cancelButtonLabel,
+                            items: items,
+                            initialSelectedValues: initialSelected,
+                            labelStyle: dialogTextStyle,
+                            dialogShapeBorder: dialogShapeBorder,
+                            checkBoxActiveColor: checkBoxActiveColor,
+                            checkBoxCheckColor: checkBoxCheckColor,
+                          );
+                        },
+                      );
 
-                List selectedValues = await showDialog<List>(
-                  context: state.context,
-                  builder: (BuildContext context) {
-                    return MultiSelectDialog(
-                      title: title,
-                      okButtonLabel: okButtonLabel,
-                      cancelButtonLabel: cancelButtonLabel,
-                      items: items,
-                      initialSelectedValues: initialSelected,
-                      labelStyle: dialogTextStyle,
-                      dialogShapeBorder: dialogShapeBorder,
-                      checkBoxActiveColor: checkBoxActiveColor,
-                      checkBoxCheckColor: checkBoxCheckColor,
-                    );
-                  },
-                );
-
-                if (selectedValues != null) {
-                  state.didChange(selectedValues);
-                  state.save();
-                }
-              },
+                      if (selectedValues != null) {
+                        state.didChange(selectedValues);
+                        state.save();
+                      }
+                    },
               child: InputDecorator(
                 decoration: InputDecoration(
                   filled: true,

@@ -1,13 +1,13 @@
 class Enfermedad {
   int _code;
-  String _nombre;
+  String _descripcion;
 
-  Enfermedad(this._code, this._nombre);
+  Enfermedad(this._code, this._descripcion);
 
-  String get nombre => _nombre;
+  String get descripcion => _descripcion;
 
-  set nombre(String value) {
-    _nombre = value;
+  set descripcion(String value) {
+    _descripcion = value;
   }
 
   int get code => _code;
@@ -17,15 +17,23 @@ class Enfermedad {
   }
 
   factory Enfermedad.fromJson(Map<String, dynamic> json) {
-    return Enfermedad(
-        json['id'],
-        json['descripcion']
-    );
+    return Enfermedad(json['id'], json['descripcion']);
   }
+
+  Enfermedad.fromDB(
+    this._code,
+    this._descripcion,
+  );
 
   @override
   String toString() {
-    return '{\"id\": $_code, \"descripcion\": \"$_nombre\"}';
+    return '{\"id\": $_code, \"descripcion\": \"$_descripcion\"}';
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'code': _code,
+      'name': _descripcion,
+    };
+  }
 }

@@ -1,18 +1,13 @@
-import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../models/Paciente.dart';
 
-class PacienteDaoDBImpl {
+class ArchivoDaoDBImpl {
   final Future<Database> database = getDatabasesPath().then((String path) {
     return openDatabase(
-      join(path, 'paciente_database.db'),
+      join(path, 'archivos.db'),
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE pacientes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT,"
-          " apellido TEXT, dni INTEGER, domicilio TEXT, peso REAL, altura REAL,"
-          " fechaNacimiento INTEGER, antecedentesFamiliares TEXT,"
-          "enfermedadesPreexistentes TEXT, historiaClinica int)",
+          "CREATE TABLE archivos(id INTEGER PRIMARY KEY AUTOINCREMENT, path TEXT)",
         );
       },
       // Set the version. This executes the onCreate function and provides a
@@ -21,7 +16,7 @@ class PacienteDaoDBImpl {
     );
   });
 
-  Future<void> insertPaciente(Paciente paciente) async {
+  Future<void> insertArchivo(String text) async {
     // Get a reference to the database.
     final Database db = await database;
 
@@ -29,58 +24,34 @@ class PacienteDaoDBImpl {
     // `conflictAlgorithm`. In this case, if the same paciente is inserted
     // multiple times, it replaces the previous data.
     await db.insert(
-      'pacientes',
-      paciente.toMap(),
+      'archivos',
+      {'id': null, 'text': text},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<List<Paciente>> pacientes() async {
-    // Get a reference to the database.
-    final Database db = await database;
-
-    // Query the table for all The Pacientes.
-    final List<Map<String, dynamic>> maps = await db.query('pacientes');
-
-    // Convert the List<Map<String, dynamic> into a List<Paciente>.
-    return List.generate(maps.length, (i) {
-      return Paciente.fromDB(
-          maps[i]['id'],
-          maps[i]['name'],
-          maps[i]['apellido'],
-          maps[i]['dni'],
-          maps[i]['domicilio'],
-          maps[i]['peso'],
-          maps[i]['altura'],
-          maps[i]['fechaNacimiento'],
-          maps[i]['enfermedadesPreexistentes'],
-          maps[i]['antecedentesFamiliares'],
-          maps[i]['historiaClinica']);
-    });
-  }
-
-  Future<void> updatePaciente(Paciente paciente) async {
+  Future<void> updateArchivo(int id, String text) async {
     // Get a reference to the database.
     final db = await database;
 
     // Update the given Paciente.
     await db.update(
-      'pacientes',
-      paciente.toMap(),
+      'archivos',
+      {'id': id, 'text': text},
       // Ensure that the Paciente has a matching id.
       where: "id = ?",
       // Pass the Paciente's id as a whereArg to prevent SQL injection.
-      whereArgs: [paciente.id],
+      whereArgs: [id],
     );
   }
 
-  Future<void> deletePaciente(int id) async {
+  Future<void> deleteEnfermedad(int id) async {
     // Get a reference to the database.
     final db = await database;
 
     // Remove the Paciente from the database.
     await db.delete(
-      'pacientes',
+      'archivos',
       // Use a `where` clause to delete a specific paciente.
       where: "id = ?",
       // Pass the Paciente's id as a whereArg to prevent SQL injection.
@@ -93,6 +64,6 @@ class PacienteDaoDBImpl {
     final db = await database;
 
     // Remove thetype '_Uint8ArrayView' is not a subtype of type 'String' Paciente from the database.
-    await db.delete('pacientes');
+    await db.delete('archivos');
   }
 }

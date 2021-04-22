@@ -1,18 +1,15 @@
 import 'dart:async';
+import 'package:flutter_poc/models/Enfermedad.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../models/Paciente.dart';
 
-class PacienteDaoDBImpl {
+class EnfermedadDaoDBImpl {
   final Future<Database> database = getDatabasesPath().then((String path) {
     return openDatabase(
-      join(path, 'paciente_database.db'),
+      join(path, 'enfermedades.db'),
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE pacientes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT,"
-          " apellido TEXT, dni INTEGER, domicilio TEXT, peso REAL, altura REAL,"
-          " fechaNacimiento INTEGER, antecedentesFamiliares TEXT,"
-          "enfermedadesPreexistentes TEXT, historiaClinica int)",
+          "CREATE TABLE enfermedades(code INTEGER PRIMARY KEY AUTOINCREMENT, descripcion TEXT)",
         );
       },
       // Set the version. This executes the onCreate function and provides a
@@ -21,70 +18,59 @@ class PacienteDaoDBImpl {
     );
   });
 
-  Future<void> insertPaciente(Paciente paciente) async {
+  Future<void> insertEnfermedad(Enfermedad enfermedad) async {
     // Get a reference to the database.
     final Database db = await database;
 
-    // Insert the Paciente into the correct table. Also specify the
-    // `conflictAlgorithm`. In this case, if the same paciente is inserted
+    // Insert the Enfermedad into the correct table. Also specify the
+    // `conflictAlgorithm`. In this case, if the same enfermedad is inserted
     // multiple times, it replaces the previous data.
     await db.insert(
-      'pacientes',
-      paciente.toMap(),
+      'enfermedades',
+      enfermedad.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<List<Paciente>> pacientes() async {
+  Future<List<Enfermedad>> enfermedades() async {
     // Get a reference to the database.
     final Database db = await database;
 
     // Query the table for all The Pacientes.
-    final List<Map<String, dynamic>> maps = await db.query('pacientes');
+    final List<Map<String, dynamic>> maps = await db.query('enfermedades');
 
-    // Convert the List<Map<String, dynamic> into a List<Paciente>.
+    // Convert the List<Map<String, dynamic> into a List<Enfermedades>.
     return List.generate(maps.length, (i) {
-      return Paciente.fromDB(
-          maps[i]['id'],
-          maps[i]['name'],
-          maps[i]['apellido'],
-          maps[i]['dni'],
-          maps[i]['domicilio'],
-          maps[i]['peso'],
-          maps[i]['altura'],
-          maps[i]['fechaNacimiento'],
-          maps[i]['enfermedadesPreexistentes'],
-          maps[i]['antecedentesFamiliares'],
-          maps[i]['historiaClinica']);
+      return Enfermedad.fromDB(maps[i]['code'], maps[i]['descripcion']);
     });
   }
 
-  Future<void> updatePaciente(Paciente paciente) async {
+  Future<void> updateEnfermedad(Enfermedad enfermedad) async {
     // Get a reference to the database.
     final db = await database;
 
     // Update the given Paciente.
     await db.update(
-      'pacientes',
-      paciente.toMap(),
+      'enfermedades',
+      enfermedad.toMap(),
       // Ensure that the Paciente has a matching id.
-      where: "id = ?",
+      where: "code = ?",
       // Pass the Paciente's id as a whereArg to prevent SQL injection.
-      whereArgs: [paciente.id],
+      whereArgs: [enfermedad.code],
     );
   }
 
-  Future<void> deletePaciente(int id) async {
+  Future<void> deleteEnfermedad(int code) async {
     // Get a reference to the database.
     final db = await database;
 
     // Remove the Paciente from the database.
     await db.delete(
-      'pacientes',
+      'enfermedades',
       // Use a `where` clause to delete a specific paciente.
-      where: "id = ?",
+      where: "code = ?",
       // Pass the Paciente's id as a whereArg to prevent SQL injection.
-      whereArgs: [id],
+      whereArgs: [code],
     );
   }
 
@@ -93,6 +79,6 @@ class PacienteDaoDBImpl {
     final db = await database;
 
     // Remove thetype '_Uint8ArrayView' is not a subtype of type 'String' Paciente from the database.
-    await db.delete('pacientes');
+    await db.delete('enfermedades');
   }
 }

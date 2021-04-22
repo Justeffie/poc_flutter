@@ -16,17 +16,17 @@ class Paciente {
   Paciente(this._id, this._name, this._apellido, this._dni, this._domicilio);
 
   Paciente.fromDB(
-    this._id,
-    this._name,
-    this._apellido,
-    this._dni,
-    this._domicilio,
-    this._peso,
-    this._altura,
-    this._fechaNacimiento,
-    this._enfermedadesAntecedentesFamiliares,
-    this._enfermedadesPreexistentes,
-  );
+      this._id,
+      this._name,
+      this._apellido,
+      this._dni,
+      this._domicilio,
+      this._peso,
+      this._altura,
+      this._fechaNacimiento,
+      this._enfermedadesAntecedentesFamiliares,
+      this._enfermedadesPreexistentes,
+      this._historiaClinica);
 
   Paciente.fromHttp(
       this._id,

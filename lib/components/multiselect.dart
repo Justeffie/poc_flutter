@@ -50,7 +50,7 @@ class _MultiselectState extends State<Multiselect> {
           style: TextStyle(fontSize: 16),
         ),
         dataSource: widget.data,
-        textField: 'nombre',
+        textField: 'descripcion',
         valueField: 'code',
         okButtonLabel: 'OK',
         cancelButtonLabel: 'CANCELAR',
@@ -63,10 +63,11 @@ class _MultiselectState extends State<Multiselect> {
             HashMap<int, dynamic> enfermedadesSeleccionadas = HashMap();
             List<Enfermedad> enfermedadesSeleccionadasList = List();
 
-            for(int i = 0; i < value.length; ++i) {
-              for(int j = 0; j < enfermedades.length; ++j) {
-                if(enfermedades[j].code == value[i]) {
-                  enfermedadesSeleccionadas.putIfAbsent(enfermedades[0].code, () => enfermedades[0].nombre);
+            for (int i = 0; i < value.length; ++i) {
+              for (int j = 0; j < enfermedades.length; ++j) {
+                if (enfermedades[j].code == value[i]) {
+                  enfermedadesSeleccionadas.putIfAbsent(
+                      enfermedades[0].code, () => enfermedades[0].descripcion);
                   enfermedadesSeleccionadasList.add(enfermedades[j]);
                 }
                 /*if(enfermedades[j]["id"] == value[i]) {
